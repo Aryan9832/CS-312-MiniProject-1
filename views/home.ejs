@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Blog</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Red Blog</div>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/posts/new">New Post</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Blogs</h1>
+        </section>
+
+        <section class="filter-section">
+            <select class="filter-select" onchange="filterPosts(this.value)">
+                <option value="">All Categories</option>
+                <% categories.forEach(category => { %>
+                    <option value="<%= category %>" <%= currentCategory === category ? 'selected' : '' %>>
+                        <%= category %>
+                    </option>
+                <% }) %>
+            </select>
+        </section>
+
+        <section class="posts-container">
+            <% if (posts.length > 0) { %>
+                <% posts.forEach(post => { %>
+                    <article class="post-card">
+                        <div class="post-header">
+                            <h2 class="post-title"><%= post.title %></h2>
+                            <div class="post-meta">
+                                By <%= post.author %> • <%= post.createdAt.toLocaleDateString() %>
+                            </div>
+                            <div class="post-category"><%= post.category %></div>
+                        </div>
+                        <div class="post-content">
+                            <p><%= post.content.substring(0, 150) %>...</p>
+                        </div>
+                        <div class="post-actions">
+                            <div>
+                                <a href="/posts/<%= post.id %>/edit" class="btn btn-edit">Edit</a>
+                                <form action="/posts/<%= post.id %>?_method=DELETE" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-delete">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state">
+                    <h2>No posts yet</h2>
+                    <a href="/posts/new" class="btn" style="background-color: #d32f2f; color: white; margin-top: 1rem;">Create Post</a>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
+    <script>
+        function filterPosts(category) {
+            if (category) {
+                window.location.href = `/?category=${encodeURIComponent(category)}`;
+            } else {
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>
